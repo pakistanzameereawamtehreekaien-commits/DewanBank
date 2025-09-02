@@ -1,0 +1,458 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dewan Bank — Dewan Official Bank LTD</title>
+  <style>
+    :root{
+      --bg:#0f172a;--card:#0b1224;--muted:#94a3b8;--text:#e5e7eb;
+      --primary:#22c55e;--danger:#ef4444;--warn:#f59e0b;--border:#1f2937;
+      --radius:12px;--shadow:0 10px 25px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(1200px 600px at 80% -20%, #0b122a 0%, #070b1f 55%, #050814 100%), var(--bg);
+      color:var(--text);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+      padding:28px;
+    }
+    .wrap{max-width:1100px;margin:0 auto;}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .brand{display:flex;gap:14px;align-items:center;font-weight:700}
+    .logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--primary),#16a34a);display:grid;place-items:center;font-weight:900;color:#052e16}
+    .subtitle{color:var(--muted);font-size:.92rem}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)), var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:18px}
+    .grid{display:grid;gap:16px}
+    .grid-2{grid-template-columns: 1.4fr .6fr;}
+    @media(max-width:900px){ .grid-2{grid-template-columns:1fr} }
+    .title{font-weight:800;font-size:1.1rem;margin:0 0 10px}
+    .headline{font-weight:900;font-size:1.6rem;margin:6px 0}
+    .input{display:flex;flex-direction:column;margin-bottom:10px}
+    input,select,textarea,button{font:inherit;color:inherit}
+    input,select,textarea{background:#0a1022;border:1px solid var(--border);border-radius:10px;padding:10px}
+    .btn{background:var(--primary);border:none;border-radius:10px;padding:10px 14px;font-weight:700;cursor:pointer}
+    .btn.secondary{background:#172033}
+    .btn.warn{background:var(--warn)}
+    .btn.danger{background:var(--danger)}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .muted{color:var(--muted)}
+    .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);font-size:.82rem}
+    .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace}
+    .tabs{display:flex;gap:8px;margin-bottom:12px}
+    .tab{padding:8px 10px;border-radius:8px;border:1px solid var(--border);cursor:pointer;background:#081222}
+    .tab.active{background:#0e1630;border-color:#2a3347}
+    .hidden{display:none}
+    .tx-list{display:grid;gap:10px}
+    .tx-item{padding:10px;border-radius:10px;border:1px solid var(--border);background:#071122}
+    .success{color:#86efac}.error{color:#fecaca}
+    footer{color:var(--muted);text-align:center;margin-top:8px}
+    small{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">DB</div>
+        <div>
+          <div>Dewan Bank</div>
+          <div class="subtitle">Dewan Official Bank LTD</div>
+        </div>
+      </div>
+      <div id="navUser" class="subtitle"></div>
+    </header>
+
+    <!-- AUTH -->
+    <div id="auth" class="grid grid-2">
+      <div class="card">
+        <div class="title">Login</div>
+        <div id="loginMsg" class="muted"></div>
+        <div class="input"><label>Account Number (Phone)</label><input id="loginPhone" type="tel" placeholder="03XXXXXXXXX"></div>
+        <div class="input"><label>Password</label><input id="loginPassword" type="password" placeholder="Password"></div>
+        <div class="row">
+          <button id="loginBtn" class="btn">Login</button>
+          <button id="toSignup" class="btn secondary">Create account</button>
+        </div>
+      </div>
+
+      <div class="card" id="signupCard">
+        <div class="title">Open New Account</div>
+        <div id="signupMsg" class="muted"></div>
+        <div class="input"><label>Full Name</label><input id="suFull" type="text" placeholder="Your full name"></div>
+        <div class="input"><label>Username</label><input id="suUser" type="text" placeholder="Choose a username"></div>
+        <div class="input"><label>Account Number (Phone)</label><input id="suPhone" type="tel" placeholder="03XXXXXXXXX"></div>
+        <div class="input"><label>Email (optional)</label><input id="suEmail" type="email" placeholder="you@example.com"></div>
+        <div class="row">
+          <div style="flex:1"><div class="input"><label>Password</label><input id="suPass" type="password" placeholder="Create a password"></div></div>
+          <div style="flex:1"><div class="input"><label>Confirm</label><input id="suPass2" type="password" placeholder="Confirm"></div></div>
+        </div>
+        <div class="row"><button id="signupBtn" class="btn">Create Account</button></div>
+      </div>
+    </div>
+
+    <!-- APP -->
+    <div id="app" class="hidden">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="subtitle">Current Balance</div>
+          <div class="headline" id="balance">PKR 0</div>
+          <div class="row" style="margin-top:8px">
+            <div class="pill mono" id="acctPill">Acct: —</div>
+            <div class="pill mono" id="userPill">@username</div>
+            <div style="margin-left:auto" class="muted" id="memberSince">Member since —</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row">
+            <button id="btnSend" class="btn">Send</button>
+            <button id="btnTx" class="btn secondary">Transactions</button>
+            <button id="btnSettings" class="btn secondary">Settings</button>
+            <button id="logout" class="btn danger" style="margin-left:auto">Logout</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="sendSection" class="card">
+        <div class="title">Send Money</div>
+        <div class="tabs"><div class="tab active" data-tab="internal">Dewan Bank</div><div class="tab" data-tab="external">Other Bank/Wallet</div></div>
+        <div id="sendMsg" class="muted"></div>
+
+        <div id="tab-internal">
+          <div class="grid">
+            <div class="row">
+              <div style="flex:1"><div class="input"><label>Recipient Account (Phone)</label><input id="inAcct" type="tel" placeholder="03XXXXXXXXX"></div></div>
+              <div style="width:150px"><div class="input"><label>Amount (PKR)</label><input id="inAmt" type="number" min="1" step="1" placeholder="0"></div></div>
+            </div>
+            <div class="input"><label>Note (optional)</label><input id="inNote" type="text" placeholder="note"></div>
+            <div class="row"><button id="sendInternal" class="btn">Send to Dewan Bank</button></div>
+          </div>
+        </div>
+
+        <div id="tab-external" class="hidden">
+          <div class="grid">
+            <div class="row">
+              <div style="flex:1"><div class="input"><label>Destination</label><select id="exDest"><option>Bank</option><option>Wallet</option><option>Bill Payment</option></select></div></div>
+              <div style="flex:1"><div class="input"><label>Beneficiary Account/IBAN/ID</label><input id="exAcct" type="text" placeholder=""></div></div>
+              <div style="width:150px"><div class="input"><label>Amount</label><input id="exAmt" type="number" min="1" step="1" placeholder="0"></div></div>
+            </div>
+            <div class="input"><label>Note</label><input id="exNote" type="text"></div>
+            <div class="row"><button id="sendExternal" class="btn warn">Send to Other</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="txSection" class="card hidden">
+        <div class="title">Transactions</div>
+        <div id="txList" class="tx-list"></div>
+      </div>
+
+      <div id="settingsSection" class="card hidden">
+        <div class="title">Settings</div>
+        <div class="grid" style="grid-template-columns:1fr 1fr;">
+          <div>
+            <div class="subtitle">Profile</div>
+            <div class="input"><label>Full Name</label><input id="stFull" type="text"></div>
+            <div class="input"><label>Username</label><input id="stUser" type="text"></div>
+            <div class="input"><label>Email</label><input id="stEmail" type="email"></div>
+            <div class="input"><label>Account (Phone)</label><input id="stPhone" type="tel" disabled></div>
+            <div class="row"><button id="saveProfile" class="btn">Save</button></div>
+          </div>
+
+          <div>
+            <div class="subtitle">Security</div>
+            <div class="input"><label>Current Password</label><input id="curPass" type="password"></div>
+            <div class="input"><label>New Password</label><input id="newPass" type="password"></div>
+            <div class="input"><label>Confirm New</label><input id="newPass2" type="password"></div>
+            <div class="row"><button id="changePass" class="btn">Change Password</button></div>
+
+            <hr style="opacity:.06;margin:12px 0">
+            <div class="subtitle">Balance Adjustment</div>
+            <div class="input"><label>Amount (PKR)</label><input id="adjAmt" type="number" min="1" step="1"></div>
+            <div class="row"><button id="addMoney" class="btn">Add</button><button id="deductMoney" class="btn danger">Deduct</button></div>
+
+            <div style="margin-top:12px" class="row">
+              <button id="exportData" class="btn secondary">Export My Data</button>
+              <button id="deleteAccount" class="btn danger">Delete Account</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer>© <span id="year"></span> Dewan Bank — Dewan Official Bank LTD</footer>
+  </div>
+
+  <script>
+    // Utilities
+    const currencyFmt = new Intl.NumberFormat('en-PK', { style:'currency', currency:'PKR', maximumFractionDigits:0 });
+    const q=(s,el=document)=>el.querySelector(s);
+    const qa=(s,el=document)=>Array.from(el.querySelectorAll(s));
+    const nowISO=()=>new Date().toISOString();
+
+    // Simple SHA-256 wrapper (returns hex)
+    async function sha256hex(str){
+      const enc = new TextEncoder().encode(str);
+      const h = await crypto.subtle.digest('SHA-256', enc);
+      return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+
+    // Storage helpers (users stored by phone)
+    function readUsers(){ try{ return JSON.parse(localStorage.getItem('dewan_users')||'{}'); }catch(e){ return {}; } }
+    function writeUsers(u){ localStorage.setItem('dewan_users', JSON.stringify(u)); }
+    function getSessionPhone(){ return localStorage.getItem('dewan_session_phone') || null; }
+    function setSessionPhone(p){ if(p) localStorage.setItem('dewan_session_phone', p); else localStorage.removeItem('dewan_session_phone'); }
+
+    // return deep copy so modifications don't mutably change local object accidentally
+    function getUser(phone){ if(!phone) return null; const u = readUsers()[phone]; return u ? JSON.parse(JSON.stringify(u)) : null; }
+    function saveUser(user){ if(!user || !user.phone) return; const users=readUsers(); users[user.phone]=user; writeUsers(users); }
+    function removeUser(phone){ const users=readUsers(); delete users[phone]; writeUsers(users); }
+
+    // Toast
+    function toast(msg, ok=true, where='#sendMsg'){ const el=q(where); if(!el) return; el.textContent=msg; el.className = ok? 'success':'error'; setTimeout(()=>{ if(el) { el.textContent=''; el.className='muted'; } }, 3000); }
+
+    function pushTx(user, tx){
+      user.transactions = user.transactions || [];
+      user.transactions.unshift(tx);
+      saveUser(user);
+    }
+
+    function renderTxList(user){
+      const list = q('#txList');
+      list.innerHTML = '';
+      if(!user || !user.transactions || !user.transactions.length){
+        const d = document.createElement('div'); d.className='muted'; d.textContent='No transactions yet.'; list.appendChild(d); return;
+      }
+      user.transactions.forEach(t=>{
+        const it = document.createElement('div'); it.className='tx-item';
+        const top = document.createElement('div'); top.className='row';
+        const kind = document.createElement('div'); kind.className='pill mono'; kind.textContent = t.kind;
+        const amt = document.createElement('div'); amt.className='mono'; amt.style.marginLeft='auto'; amt.style.fontWeight='800';
+        amt.textContent = (t.dir==='in'? '+':'-') + ' ' + currencyFmt.format(t.amount);
+        amt.style.color = t.dir==='in' ? '#86efac' : '#fecaca';
+        top.appendChild(kind); top.appendChild(amt);
+        const meta = document.createElement('div'); meta.className='muted'; meta.textContent = t.meta || '';
+        const when = document.createElement('small'); when.className='muted'; when.textContent = new Date(t.at).toLocaleString();
+        it.appendChild(top); it.appendChild(meta); it.appendChild(when);
+        list.appendChild(it);
+      });
+    }
+
+    function show(el){ el.classList.remove('hidden'); }
+    function hide(el){ el.classList.add('hidden'); }
+
+    // Auth
+    async function signup(){
+      const full = q('#suFull').value.trim();
+      const username = q('#suUser').value.trim();
+      const phone = q('#suPhone').value.trim();
+      const email = q('#suEmail').value.trim();
+      const p1 = q('#suPass').value;
+      const p2 = q('#suPass2').value;
+      const msg = q('#signupMsg');
+
+      if(!full || !username || !phone || !p1 || !p2){ msg.textContent = 'Please fill required fields.'; return; }
+      if(p1!==p2){ msg.textContent = 'Passwords do not match.'; return; }
+      const users = readUsers();
+      if(users[phone]){ msg.textContent = 'An account with this phone already exists.'; return; }
+
+      const passHash = await sha256hex(p1);
+      const u = { phone, username, fullName:full, email, passwordHash:passHash, balance:0, transactions:[], createdAt: nowISO(), updatedAt: nowISO() };
+      users[phone]=u; writeUsers(users);
+      msg.textContent = 'Account created. You can login now.';
+      // clear form
+      q('#suFull').value=''; q('#suUser').value=''; q('#suPhone').value=''; q('#suEmail').value=''; q('#suPass').value=''; q('#suPass2').value='';
+    }
+
+    async function login(){
+      const phone = q('#loginPhone').value.trim();
+      const pass = q('#loginPassword').value;
+      const msg = q('#loginMsg');
+      const u = getUser(phone);
+      if(!u){ msg.textContent = 'Incorrect account or password.'; return; }
+      const ok = (await sha256hex(pass)) === u.passwordHash;
+      if(!ok){ msg.textContent = 'Incorrect account or password.'; return; }
+      setSessionPhone(phone);
+      q('#loginPassword').value='';
+      renderApp();
+    }
+
+    function logout(){
+      setSessionPhone(null);
+      hide(q('#app'));
+      show(q('#auth'));
+      q('#navUser').textContent='';
+    }
+
+    // App UI
+    function renderApp(){
+      const phone = getSessionPhone(); const u = getUser(phone);
+      if(!u){ logout(); return; }
+
+      q('#navUser').textContent = u.fullName + ' — ' + u.username;
+      q('#balance').textContent = currencyFmt.format(u.balance);
+      q('#acctPill').textContent = 'Acct: ' + u.phone;
+      q('#userPill').textContent = '@' + u.username;
+      q('#memberSince').textContent = 'Member since ' + new Date(u.createdAt).toLocaleDateString();
+
+      q('#stFull').value = u.fullName || '';
+      q('#stUser').value = u.username || '';
+      q('#stEmail').value = u.email || '';
+      q('#stPhone').value = u.phone || '';
+
+      renderTxList(u);
+
+      hide(q('#auth'));
+      show(q('#app'));
+      // show main sections by default
+      hide(q('#txSection')); hide(q('#settingsSection')); show(q('#sendSection'));
+    }
+
+    // Transfers
+    function validAmount(v){
+      if(v===null || v===undefined || v==='') return false;
+      const n = Number(v);
+      return Number.isFinite(n) && n>0 && Number.isInteger(n);
+    }
+    function ensureFunds(u, amt){ return u.balance >= amt; }
+
+    function clearSend(){
+      q('#inAcct').value=''; q('#inAmt').value=''; q('#inNote').value='';
+      q('#exAcct').value=''; q('#exAmt').value=''; q('#exNote').value=''; q('#exDest').value='Bank';
+    }
+
+    function doInternalTransfer(from, to, amount, note){
+      // debit
+      from.balance -= amount;
+      pushTx(from, { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), at: nowISO(), kind:'Transfer — Dewan Bank', dir:'out', amount, meta:`To ${to.fullName} (${to.phone})${note? ' — '+note : ''}` });
+      // credit
+      to.balance += amount;
+      pushTx(to, { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+1), at: nowISO(), kind:'Transfer — Dewan Bank', dir:'in', amount, meta:`From ${from.fullName} (${from.phone})${note? ' — '+note : ''}` });
+    }
+
+    function doExternalTransfer(from, destType, destAcct, amount, note){
+      from.balance -= amount;
+      pushTx(from, { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), at: nowISO(), kind:`Transfer — ${destType}`, dir:'out', amount, meta: `${destType} • ${destAcct}${note? ' — '+note : ''}` });
+    }
+
+    // Settings
+    function saveProfile(){
+      const u = getUser(getSessionPhone());
+      if(!u) return;
+      u.fullName = q('#stFull').value.trim() || u.fullName;
+      u.username = q('#stUser').value.trim() || u.username;
+      u.email = q('#stEmail').value.trim();
+      u.updatedAt = nowISO();
+      saveUser(u);
+      renderApp();
+      toast('Profile saved', true);
+    }
+
+    async function changePassword(){
+      const u = getUser(getSessionPhone()); if(!u) return;
+      const cur = q('#curPass').value; const np = q('#newPass').value; const np2 = q('#newPass2').value;
+      if(!cur || !np || !np2){ alert('Fill all fields'); return; }
+      if((await sha256hex(cur)) !== u.passwordHash){ alert('Current password is incorrect'); return; }
+      if(np !== np2){ alert('New passwords do not match'); return; }
+      u.passwordHash = await sha256hex(np); u.updatedAt = nowISO(); saveUser(u);
+      q('#curPass').value=q('#newPass').value=q('#newPass2').value='';
+      alert('Password changed');
+    }
+
+    function adjustBalance(sign){
+      const u = getUser(getSessionPhone()); if(!u) return;
+      const raw = q('#adjAmt').value;
+      if(!validAmount(raw)){ alert('Enter a valid whole amount'); return; }
+      const amt = Number(raw);
+      if(sign < 0 && !ensureFunds(u, amt)){ alert('Insufficient balance'); return; }
+      u.balance += sign*amt;
+      pushTx(u, { id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), at: nowISO(), kind: sign>0? 'Balance Adjustment (Add)' : 'Balance Adjustment (Deduct)', dir: sign>0? 'in':'out', amount: amt, meta: 'Settings • Balance adjustment' });
+      q('#adjAmt').value='';
+      renderApp();
+    }
+
+    function exportData(){
+      const u = getUser(getSessionPhone()); if(!u) return;
+      const blob = new Blob([JSON.stringify(u, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a=document.createElement('a'); a.href=url; a.download = `dewan_bank_${u.phone}.json`; a.click(); URL.revokeObjectURL(url);
+    }
+
+    function deleteAccount(){
+      if(!confirm('Delete your account from this browser? This cannot be undone.')) return;
+      const phone = getSessionPhone(); removeUser(phone); logout(); alert('Account removed from this browser.');
+    }
+
+    // Event wiring
+    window.addEventListener('DOMContentLoaded', ()=>{
+      q('#year').textContent = new Date().getFullYear();
+
+      // Authentication
+      q('#signupBtn').addEventListener('click', signup);
+      q('#loginBtn').addEventListener('click', login);
+      q('#toSignup').addEventListener('click', ()=>{ q('#signupMsg').textContent=''; q('#signupCard').scrollIntoView({behavior:'smooth'}) });
+
+      // Nav & logout
+      q('#logout').addEventListener('click', logout);
+      q('#btnSend').addEventListener('click', ()=>{ show(q('#sendSection')); hide(q('#txSection')); hide(q('#settingsSection')); q('#sendSection').scrollIntoView({behavior:'smooth'}); });
+      q('#btnTx').addEventListener('click', ()=>{ show(q('#txSection')); hide(q('#settingsSection')); hide(q('#sendSection')); q('#txSection').scrollIntoView({behavior:'smooth'}); });
+      q('#btnSettings').addEventListener('click', ()=>{ show(q('#settingsSection')); hide(q('#txSection')); hide(q('#sendSection')); q('#settingsSection').scrollIntoView({behavior:'smooth'}); });
+
+      // Send tabs
+      qa('.tab').forEach(t=>t.addEventListener('click', (e)=>{
+        qa('.tab').forEach(x=>x.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+        if(e.currentTarget.dataset.tab === 'internal'){ show(q('#tab-internal')); hide(q('#tab-external')); }
+        else { show(q('#tab-external')); hide(q('#tab-internal')); }
+      }));
+
+      // Send internal
+      q('#sendInternal').addEventListener('click', ()=>{
+        const from = getUser(getSessionPhone()); if(!from){ toast('Not signed in', false); return; }
+        const acct = q('#inAcct').value.trim(); const amtRaw = q('#inAmt').value; const note = q('#inNote').value.trim();
+        if(!acct){ toast('Enter recipient account number', false); return; }
+        if(acct === from.phone){ toast('You cannot send to your own account', false); return; }
+        if(!validAmount(amtRaw)){ toast('Enter a valid whole amount', false); return; }
+        const amt = Number(amtRaw);
+        if(!ensureFunds(from, amt)){ toast('Insufficient balance', false); return; }
+        const to = getUser(acct);
+        if(!to){ toast('There Is No Account Available With This Account Number', false); return; }
+        doInternalTransfer(from, to, amt, note);
+        // both saved by pushTx
+        clearSend();
+        renderApp();
+        toast('Transfer successful', true);
+      });
+
+      // Send external
+      q('#sendExternal').addEventListener('click', ()=>{
+        const from = getUser(getSessionPhone()); if(!from){ toast('Not signed in', false); return; }
+        const dest = q('#exDest').value; const acct = q('#exAcct').value.trim(); const amtRaw = q('#exAmt').value; const note = q('#exNote').value.trim();
+        if(!acct){ toast('Enter beneficiary details', false); return; }
+        if(!validAmount(amtRaw)){ toast('Enter a valid whole amount', false); return; }
+        const amt = Number(amtRaw);
+        if(!ensureFunds(from, amt)){ toast('Insufficient balance', false); return; }
+        doExternalTransfer(from, dest, acct, amt, note);
+        clearSend();
+        renderApp();
+        toast('Transfer posted', true);
+      });
+
+      // Settings
+      q('#saveProfile').addEventListener('click', saveProfile);
+      q('#changePass').addEventListener('click', changePassword);
+      q('#addMoney').addEventListener('click', ()=>adjustBalance(+1));
+      q('#deductMoney').addEventListener('click', ()=>adjustBalance(-1));
+      q('#exportData').addEventListener('click', exportData);
+      q('#deleteAccount').addEventListener('click', deleteAccount);
+
+      // session restore
+      const phone = getSessionPhone();
+      if(phone && getUser(phone)){ renderApp(); } else { show(q('#auth')); hide(q('#app')); }
+    });
+  </script>
+</body>
+</html>
